@@ -1,8 +1,18 @@
-const CACHE_NAME = 'pmbia-v2';
-const ASSETS = ['/', '/index.html', '/manifest.json', '/apple-touch-icon.png', '/apple-touch-icon-180.png'];
+const CACHE_NAME = 'pmbia-v3';
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS)));
+  e.waitUntil(
+    caches.open(CACHE_NAME).then(cache => {
+      const base = self.registration.scope;
+      return cache.addAll([
+        base,
+        base + 'index.html',
+        base + 'manifest.json',
+        base + 'apple-touch-icon.png',
+        base + 'apple-touch-icon-180.png'
+      ]);
+    })
+  );
   self.skipWaiting();
 });
 
@@ -15,6 +25,6 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request).catch(() => caches.match('/index.html')))
+    caches.match(e.request).then(cached => cached || fetch(e.request).catch(() => caches.match(self.registration.scope + 'index.html')))
   );
 });

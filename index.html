@@ -7,9 +7,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="PMBIA">
 <title>PMBIA Quick Reference</title>
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-180.png">
-<link rel="apple-touch-icon" sizes="512x512" href="apple-touch-icon.png">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon-180.png">
+<link rel="apple-touch-icon" sizes="512x512" href="./apple-touch-icon.png">
 <style>
   :root {
     --bg: #0a0e1a;
@@ -1965,7 +1965,7 @@ function safeJSON(obj) {
 // Register service worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(() => {});
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
   });
 }
 
