@@ -1,0 +1,1980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PMBIA">
+<title>PMBIA Quick Reference</title>
+<link rel="manifest" href="manifest.json">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #141929;
+    --surface2: #1e2640;
+    --border: #2a3352;
+    --accent: #00d4a0;
+    --accent2: #f5a623;
+    --red: #ff6b6b;
+    --text: #e8edf8;
+    --text2: #8899bb;
+    --what: #3b82f6;
+    --why: #f5a623;
+    --how: #00d4a0;
+    --keyword: #c084fc;
+    --analogy: #fb923c;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  #app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    height: 100dvh;
+  }
+
+  /* ── HEADER ── */
+  #header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: calc(var(--safe-top) + 10px) 16px 10px;
+    flex-shrink: 0;
+    z-index: 10;
+  }
+
+  .header-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  #back-btn {
+    display: none;
+    background: var(--surface2);
+    border: none;
+    color: var(--accent);
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    flex-shrink: 0;
+  }
+
+  #page-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .logo {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  /* ── SEARCH ── */
+  #search-wrap {
+    position: relative;
+  }
+
+  #search {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 12px 9px 36px;
+    color: var(--text);
+    font-size: 15px;
+    outline: none;
+    -webkit-appearance: none;
+  }
+
+  #search::placeholder { color: var(--text2); }
+  #search:focus { border-color: var(--accent); }
+
+  .search-icon {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text2);
+    font-size: 15px;
+    pointer-events: none;
+  }
+
+  /* ── SCROLL AREA ── */
+  #content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 12px 16px;
+    padding-bottom: calc(var(--safe-bottom) + 70px);
+  }
+
+  /* ── BOTTOM NAV ── */
+  #nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    padding-bottom: var(--safe-bottom);
+    z-index: 10;
+  }
+
+  .nav-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text2);
+    padding: 8px 4px 6px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: color 0.15s;
+  }
+
+  .nav-btn.active { color: var(--accent); }
+  .nav-icon { font-size: 20px; line-height: 1; }
+
+  /* ── HOME GRID ── */
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--text2);
+    margin: 16px 0 8px;
+  }
+
+  .section-title:first-child { margin-top: 4px; }
+
+  .quick-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+
+  .quick-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    active: background var(--surface2);
+  }
+
+  .quick-card:active { background: var(--surface2); transform: scale(0.98); }
+
+  .quick-card-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+
+  .quick-card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .quick-card-sub {
+    font-size: 11px;
+    color: var(--text2);
+    margin-top: 4px;
+  }
+
+  /* ── LIST ITEMS ── */
+  .list-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.15s;
+  }
+
+  .list-item:active { background: var(--surface2); }
+
+  .list-item-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    width: 36px;
+    text-align: center;
+  }
+
+  .list-item-body { flex: 1; }
+
+  .list-item-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .list-item-sub {
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 2px;
+  }
+
+  .list-item-arrow {
+    color: var(--text2);
+    font-size: 14px;
+  }
+
+  /* ── SKILL BADGE ── */
+  .badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 3px 7px;
+    border-radius: 5px;
+    margin-right: 4px;
+  }
+
+  .badge-sb   { background: rgba(59,130,246,0.2);  color: #60a5fa; }
+  .badge-c    { background: rgba(245,166,35,0.2);  color: #fbbf24; }
+  .badge-ta   { background: rgba(0,212,160,0.2);   color: #00d4a0; }
+  .badge-dc   { background: rgba(192,132,252,0.2); color: #c084fc; }
+  .badge-pc   { background: rgba(251,146,60,0.2);  color: #fb923c; }
+  .badge-tc   { background: rgba(244,63,94,0.2);   color: #f87171; }
+
+  /* ── DETAIL PAGE ── */
+  .detail-header {
+    margin-bottom: 16px;
+  }
+
+  .detail-skill-tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text2);
+    margin-bottom: 6px;
+  }
+
+  .detail-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .detail-goal-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+  }
+
+  .goal-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 5px;
+  }
+
+  .goal-row:last-child { margin-bottom: 0; }
+
+  .goal-label {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .gl-what { background: rgba(59,130,246,0.25); color: #60a5fa; }
+  .gl-why  { background: rgba(245,166,35,0.25); color: #fbbf24; }
+  .gl-how  { background: rgba(0,212,160,0.25);  color: #00d4a0; }
+
+  .goal-text {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .goal-text strong { color: var(--accent); }
+
+  /* ── CONTENT BLOCKS ── */
+  .block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+
+  .block-title {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .block-title-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .body-text {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  .body-text:last-child { margin-bottom: 0; }
+
+  .bullet-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .bullet-list li {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.5;
+    padding: 4px 0 4px 18px;
+    position: relative;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .bullet-list li:last-child { border-bottom: none; }
+
+  .bullet-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 12px;
+    top: 5px;
+  }
+
+  .keyword-block {
+    background: rgba(192,132,252,0.08);
+    border: 1px solid rgba(192,132,252,0.25);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: #c084fc;
+    font-weight: 600;
+  }
+
+  .keyword-block::before {
+    content: 'KEYWORDS  ';
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    opacity: 0.7;
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  .analogy-block {
+    background: rgba(251,146,60,0.08);
+    border: 1px solid rgba(251,146,60,0.25);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: #fb923c;
+  }
+
+  .analogy-block::before {
+    content: 'ANALOGIES  ';
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    opacity: 0.7;
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  .warn-block {
+    background: rgba(255,107,107,0.08);
+    border: 1px solid rgba(255,107,107,0.25);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: var(--red);
+  }
+
+  .warn-block::before {
+    content: '⚠ SAFETY  ';
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    opacity: 0.7;
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  .info-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+
+  .info-chip {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 11px;
+    color: var(--text2);
+  }
+
+  .info-chip strong { color: var(--text); }
+
+  .phase-header {
+    background: linear-gradient(135deg, var(--surface2), var(--surface));
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .phase-header:active { opacity: 0.85; }
+
+  .phase-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .phase-sub {
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 2px;
+  }
+
+  .phase-chevron {
+    color: var(--text2);
+    font-size: 16px;
+    transition: transform 0.2s;
+  }
+
+  .phase-content {
+    display: none;
+    margin-bottom: 10px;
+  }
+
+  .phase-content.open { display: block; }
+
+  /* ── SEARCH RESULTS ── */
+  .search-results { }
+
+  .search-result-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+
+  .search-result-item:active { background: var(--surface2); }
+
+  .sr-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .sr-context {
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 3px;
+  }
+
+  .sr-match {
+    font-size: 12px;
+    color: var(--accent);
+    margin-top: 3px;
+    font-style: italic;
+  }
+
+  /* step numbers */
+  .steps { counter-reset: steps; list-style: none; }
+  .steps li {
+    counter-increment: steps;
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.5;
+    padding: 6px 0 6px 30px;
+    position: relative;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .steps li:last-child { border-bottom: none; }
+  .steps li::before {
+    content: counter(steps);
+    position: absolute;
+    left: 0;
+    top: 6px;
+    background: var(--accent);
+    color: var(--bg);
+    font-size: 10px;
+    font-weight: 800;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* divider */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 10px 0;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text2);
+    font-size: 14px;
+  }
+
+  .highlight { color: var(--accent); font-weight: 700; }
+
+  /* sub-item list on skills overview */
+  .skill-overview-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .skill-overview-item:active { background: var(--surface2); }
+
+  .soi-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .soi-title {
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .soi-sub {
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 3px;
+  }
+
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HEADER -->
+  <div id="header">
+    <div class="header-row">
+      <button id="back-btn" onclick="goBack()">← Back</button>
+      <div id="page-title"><span class="logo">PMBIA</span> Quick Reference</div>
+    </div>
+    <div id="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input id="search" type="search" placeholder="Search skills, lessons, keywords…" 
+             oninput="handleSearch(this.value)" autocomplete="off" autocorrect="off" spellcheck="false">
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div id="content"></div>
+
+  <!-- BOTTOM NAV -->
+  <div id="nav">
+    <button class="nav-btn active" id="nav-home" onclick="showPage('home')">
+      <span class="nav-icon">🏠</span>Home
+    </button>
+    <button class="nav-btn" id="nav-skills" onclick="showPage('skills')">
+      <span class="nav-icon">⚡</span>Skills
+    </button>
+    <button class="nav-btn" id="nav-lessons" onclick="showPage('lessons')">
+      <span class="nav-icon">📖</span>Lessons
+    </button>
+    <button class="nav-btn" id="nav-moves" onclick="showPage('moves')">
+      <span class="nav-icon">🚵</span>Moves
+    </button>
+  </div>
+
+</div>
+
+<script>
+
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+
+const SKILLS = [
+  {
+    id: 'sb',
+    icon: '⚖️',
+    name: 'Stability & Balance',
+    type: 'Bio-Mechanical',
+    badgeClass: 'badge-sb',
+    tagline: 'Strong position + range of movement',
+    overview: `Stability is the ability to resist forces through a strong riding position. Balance is managing instability through range of movement. Together they are the most fundamental skill in mountain biking.\n\nA more centred position makes the rider more stable. A lower position can also improve stability but may cause more fatigue. The key is constantly adjusting between positions to manage position, strength and efficiency.\n\nChin over stem and hips over bottom bracket are two key signs of a stable rider, ready to react and balance.`,
+    components: [
+      {
+        id: 'neutral',
+        name: 'Neutral Position',
+        what: 'Learn how to descend using the Neutral Position',
+        why: 'This position provides good stability while helping the rider save energy and stay relaxed',
+        how: 'Stand up TALL & RELAXED with PEDALS LEVEL and CHIN OVER STEM to be centred between the two wheels. Great for traction. Heels dropped to help extend the knees so muscles can relax.',
+        keywords: 'Position → Stability → Efficiency → Less Fatigue',
+        analogies: 'Picnic table vs. lamp post — low and stable vs. tall and wobbly',
+        points: [
+          'Chin over stem — centred between the two wheels',
+          'Pedals level — helps distribute weight evenly',
+          'Heels dropped — extends knees so muscles can relax',
+          'Tall and relaxed — less tiring, great for efficiency',
+          'Less fore-aft range of movement than Ready'
+        ]
+      },
+      {
+        id: 'ready',
+        name: 'Ready Position',
+        what: 'Learn how to descend using the Ready Position',
+        why: 'This position offers more stability and range of movement for faster or more difficult sections of trail. Good for corners.',
+        how: 'Same as Neutral but LOWER & WIDER. Bend elbows and hinge at the waist FIRST. Bend the knees only if needed. Think of it as a READY "DIAL" — use only as much as you need, because being low is also more tiring.',
+        keywords: 'Position → Stability → Resistance to Forces → Range of Movement → Balance',
+        analogies: 'Monster truck vs. race car | Clothes line to stay low | Ready "dial" — use only as much as needed',
+        points: [
+          'Same as Neutral but lower and wider',
+          'Hinge at the waist and bend elbows FIRST',
+          'Flex knees only if needed — not as default',
+          'Chin stays over stem — stay centred',
+          'More stability and range of movement',
+          'More tiring — treat it as a dial, not a switch'
+        ]
+      },
+      {
+        id: 'climbing',
+        name: 'Seated Climbing Position',
+        what: 'Learn how to climb with more control and confidence',
+        why: 'So our climbing is more efficient and we can tackle steeper terrain more successfully',
+        how: 'Slide the HIPS FORWARD on the seat and HINGE AT THE WAIST to lower your chest to the bars. Lowering the wrists can also help.',
+        keywords: 'Position → Stability → Front wheel stays down',
+        analogies: 'Get low and sniff the donut on the front wheel! | If the seat is uncomfortable… your hips are forward!',
+        points: [
+          'Hips forward on the seat',
+          'Chest low — hinge at the waist, NOT by hunching the back',
+          'Wrists low as needed',
+          'Keeps the front wheel weighted and tracking',
+          'Maintains traction on the rear wheel',
+          'If the seat feels uncomfortable, hips are in the right place'
+        ],
+        cues: ['Hips forward, chest low', 'Relax your grip — piano hands', 'Can you feel the front wheel staying down?'],
+        see_bad: 'Elbows tucking in, front wheel lifting, sitting too upright, gripping tight',
+        see_good: 'Hips forward, chest low, relaxed grip, front wheel weighted and down'
+      },
+      {
+        id: 'hover',
+        name: 'Hover Climbing (Steeper Terrain)',
+        what: 'Learn to climb steeper terrain with the hover position',
+        why: 'On steeper gradients, a seated position alone may not keep enough weight over the front wheel',
+        how: 'Raise the hips about ONE INCH above the seat. Hinge at the waist using core muscles to keep weight low and centred, keeping hips over the rear wheel for grip and chest low over the bars for balance.',
+        keywords: 'Hips ONE inch off seat → not standing up → chest low',
+        analogies: 'Think "hover" not "stand up"',
+        points: [
+          'Hips ONE inch above seat — not standing up',
+          'Hinge at the waist — keep weight low',
+          'Hips over rear wheel for traction',
+          'Chest low over bars for front wheel weight',
+          'Contrast: show standing tall vs hovering'
+        ]
+      },
+      {
+        id: 'rom',
+        name: 'Range of Movement & Balance',
+        what: 'Use fore-aft and lateral movement to manage balance',
+        why: 'A rider is never 100% stable — range of movement allows them to react and recover without falling',
+        how: 'Move the bike fore-aft under your body to feel the difference. Too far back = strain in fingers. Too far forward = strain on shoulders. Centred = relaxed grip, mobile body. Repeat side to side for lateral balance.',
+        keywords: 'ROM → Balance → Relaxed → Recovery Mode vs Drive Mode',
+        analogies: null,
+        points: [
+          'Moving the BIKE is quicker — better for larger, faster corrections',
+          'Moving the BODY is slower — better for gradual, smaller adjustments',
+          'Good balance uses both together',
+          'Centred = relaxed grip, mobile, can move in any direction',
+          'Too stiff = less ROM = harder to react = easier to crash'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'c',
+    icon: '⚙️',
+    name: 'Controls',
+    type: 'Mechanical',
+    badgeClass: 'badge-c',
+    tagline: 'Gears, braking & dropper post',
+    overview: `Controls is the mechanical skill — operating the gears, brakes and dropper post. Without proper gear selection or speed control, mountain biking becomes dangerous.\n\nGears Skill Goal: Achieve efficiency by maintaining a consistent cadence (60–90rpm) regardless of speed, terrain or strength.\n\nBraking Skill Goal: Control speed without skidding.`,
+    components: [
+      {
+        id: 'cadence',
+        name: 'Cadence & Gears',
+        what: 'Learn how to use gears to maintain the correct cadence',
+        why: 'To be more efficient — make riding easier, the climbs less tiring and the trails more fun',
+        how: 'Change gears according to speed and terrain to maintain a consistent cadence at all times… one that you can accelerate with.',
+        keywords: 'A.C.E — Accelerate, Comfortable, Efficient | 60–90rpm',
+        analogies: "Car engine revs — too slow it stalls, too fast burns fuel. Find the 'jog zone'. | Running pace: walking (too slow), sprinting (burns out), jogging (all day).",
+        points: [
+          'Cadence = how fast you pedal (rpm)',
+          'Good cadence: 60–90rpm — you can ACCELERATE, it\'s COMFORTABLE and EFFICIENT',
+          'Too fast cadence = gear too easy = can\'t accelerate',
+          'Too slow cadence = gear too hard = legs burn out',
+          'Change gear whenever speed or terrain changes',
+          'Focus on cadence feel, not which specific gear',
+          '"Cruise Mode" = the gear you could ride all day'
+        ],
+        exercises: [
+          'Cadence Carousel: Students circle clockwise — instructor in centre to see drivetrains',
+          'Step 1: Easiest gear, spin as fast as possible — feel too-fast cadence. Can you accelerate?',
+          'Step 2: Hardest gear with one-finger drag brake — feel too-slow cadence. Can you accelerate?',
+          'Step 3: Find "Cruise Mode" gear — right knee comes up slightly faster than once per second',
+          'Develop: Maintain efficient cadence as speed or terrain changes',
+          'Alternative: Easy-Hard Race — race in easiest gear, then hardest, then free choice'
+        ]
+      },
+      {
+        id: 'braking',
+        name: 'Braking',
+        what: 'Learn how to brake and slow down without skidding',
+        why: 'So we can control our speed at all times and improve confidence on loose terrain',
+        how: 'Try to apply the brakes GRADUALLY… a little bit at a time. Once the brakes are on, maintain a CONSISTENT power (no pumping). Stay strong and brace to control your body position and stability.',
+        keywords: 'Gradual — Consistent — Adjust',
+        analogies: 'Light dimmer switch — not an on/off switch | Coffee cup on the handlebars — don\'t spill it | Braking in a car',
+        warn: 'Start away from trails on smooth open terrain. Loose gravel and dirt is fine. Deep gravel, sand or mud is not safe.',
+        points: [
+          'Front brake = more power, better for slowing/stopping',
+          'Rear brake = less power, good for not speeding up',
+          'GRADUAL: apply a little at a time',
+          'CONSISTENT: keep power constant — no pumping',
+          'ADJUST: ease off if skidding',
+          'Use BOTH brakes simultaneously for optimum control',
+          'Brace against forward force: drop heels and get slightly lower',
+          'Selective braking: brake MORE on straights, LESS in corners and rough sections'
+        ],
+        exercises: [
+          'Step 1 — Walking: Walk bikes and squeeze each brake separately. Feel the difference.',
+          'Step 2 — Rear brake only: Neutral position, gather speed, slow at a marker without skidding.',
+          'Step 3 — Controlling a skid: Demo a small intentional skid, then ease the squeeze to recover. "Bite point" practice.',
+          'Step 4 — Front brake only: Repeat Step 2. No intentional skidding. Very gradual on first attempts.',
+          'Step 5 — Both brakes: Progress to using both together, starting gradually.',
+          'Develop: Marker stop drill, increasing speed in small increments. One finger on each lever.'
+        ],
+        cues: ['Gradual, consistent, adjust', 'Don\'t grab — squeeze', 'Drop your heels and get lower as you brake', 'Feel the traction, not the skid'],
+        see_bad: 'Grabbing brakes suddenly, rear-wheel skidding, late braking, body lurching forward',
+        see_good: 'Gradual and consistent braking, bracing and lower, braking before features, maintaining traction'
+      },
+      {
+        id: 'dropper',
+        name: 'Dropper Post',
+        what: 'Learn when and how much to drop the seat post',
+        why: 'A lower seat gives more range of movement for descending, making it easier to stay balanced and move on the bike',
+        how: 'Drop the seat when descending or riding technical terrain. The amount depends on the terrain: 100% for steeper descents, 25% for undulating technical terrain that still requires some pedalling.',
+        keywords: 'When → How Much → Range of Movement',
+        analogies: null,
+        points: [
+          'Dropper = more range of movement on descents',
+          'Drop 100% for steep descents — full clearance',
+          'Drop 25-50% for undulating technical terrain — balance of pedalling and movement',
+          'Can help beginners start and stop more easily',
+          'Teach WHEN to use it, then HOW MUCH'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'ta',
+    icon: '👁️',
+    name: 'Terrain Awareness',
+    type: 'Visual & Tactical',
+    badgeClass: 'badge-ta',
+    tagline: 'Trail scanning, line choice & decisions',
+    overview: `Terrain Awareness is an observational and tactical skill. Trail scanning collects information about the trail. Line choice is the tactical outcome of that information.\n\nMore info = more choices = better decisions = safer, smoother riding.\n\nTerrain Awareness supports ALL other skills — better scanning helps with braking, cornering, cadence, everything.`,
+    components: [
+      {
+        id: 'scanning',
+        name: 'Trail Scanning — Now & Next',
+        what: 'Learn how to ride better on technical terrain by scanning the trail with your vision',
+        why: 'So we can collect more information about the trail and better react and adapt, for more control and flow',
+        how: 'Scan your vision between the NOW and NEXT up and down the trail, to help create a FIELD OF VISION — so you are aware of a whole SECTION of trail.',
+        keywords: 'NOW → NEXT → Field of Vision → Information → Decisions',
+        analogies: 'Headlights — high and low beams | "Pingpong" with the eyes | Details vs. the big picture',
+        points: [
+          'NOW: 1–2 seconds ahead — the section about to ride. Time to EXECUTE.',
+          'NEXT: 3–5 seconds ahead — the section coming up. Time to PLAN & PREPARE.',
+          'Field of Vision = the section between NOW and NEXT',
+          'Too much NOW = can\'t prepare for what\'s coming',
+          'Too much NEXT = can\'t deal with immediate obstacles',
+          'Faster speeds = NOW and NEXT become closer together',
+          'Technical terrain = vision gets "stuck" in NOW — actively scan',
+          'Also scan LEFT to RIGHT through corners for line choice'
+        ],
+        exercises: [
+          'Guitar Picks exercise: Follow instructor down trail, looking for "dropped" picks. Forces scanning between now and next.',
+          'Ride a section ONLY in NOW — discuss the cons (no preparation)',
+          'Ride same section ONLY in NEXT — discuss cons (miss obstacles)',
+          'Combine: scan between both — discuss the difference',
+          'Progress: same terrain at slightly higher speed — scanning becomes more critical'
+        ]
+      },
+      {
+        id: 'linechoice',
+        name: 'Line Choice',
+        what: 'Learn to choose the best line through the trail',
+        why: 'Better line choice = smoother, faster, safer riding. The right line reduces effort and increases flow.',
+        how: 'Use trail scanning to identify the three line types: Smooth, Direct, or Efficient. Choose based on your ability and desired outcome.',
+        keywords: 'Smooth → Direct → Efficient → Decision Making',
+        analogies: 'Wheels made of glass — avoid all bumps | Try to ride "quietly" | Racing line',
+        points: [
+          'SMOOTH LINE: Least obstacles and bumps — safest for beginners. Often not the most direct.',
+          'DIRECT LINE: Shortest route from A to B. Often through the middle of rough sections.',
+          'EFFICIENT LINE: Combination of smooth and direct — the "racing line". Usually fastest.',
+          'Sometimes all three are the same line',
+          'Line choice depends on ability and desired outcome',
+          'Better scanning = more time to see options = better decisions'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'dc',
+    icon: '↩️',
+    name: 'Direction Control',
+    type: 'Bio-Mechanical',
+    badgeClass: 'badge-dc',
+    tagline: 'Steering, leaning & cornering',
+    overview: `Direction Control means: (1) maintaining direction — holding a line, (2) small direction change — avoiding an obstacle, (3) complete direction change — cornering.\n\nThe three components are Steering, Leaning (Inclination & Angulation), and Rotation. Cornering is one outcome of this skill — you can also improve cornering through any of the other six skills.`,
+    components: [
+      {
+        id: 'steering',
+        name: 'Steering',
+        what: 'Steering initiates and controls all other components of direction control',
+        why: 'Without steering, leaning and rotating are extremely difficult. It is the essential prerequisite.',
+        how: 'Steering is largely intuitive once riding without stabilisers. Slow speeds = more handlebar input. High speeds = less steering, more leaning.',
+        keywords: 'Steering → initiates Leaning → initiates Rotation',
+        analogies: null,
+        points: [
+          'Slow speed corners: more handlebar steering',
+          'High speed corners: less steering, more lean',
+          'Counter-steering: briefly turn opposite direction to set up a wider entry',
+          'Steering initiates inclination and rotation'
+        ]
+      },
+      {
+        id: 'leaning',
+        name: 'Leaning — Inclination & Angulation',
+        what: 'Learn to lean the bike and body through corners for stability and traction',
+        why: 'Proper leaning balances gravity and centrifugal force in corners for stability and grip',
+        how: 'Approach in Neutral Position. Just before the corner, move into READY position — bend elbows and hinge at the waist. Allow the bike to lean (angulate) underneath you — bike leans more than the body.',
+        keywords: 'Inclination (body + bike lean together) → Angulation (bike leans MORE than body)',
+        analogies: 'Each corner has a lower ceiling vs. the straight | Keep the "scales" level — even weight on both wheels',
+        points: [
+          'INCLINATION: leaning body and bike together — used in most flowing corners',
+          'ANGULATION: bike leans MORE than the body — bike-body separation',
+          'Angulation gives: more stability, adjustability, and grip (traction)',
+          'A lower chest allows arms to bend/extend as bike tips side to side',
+          'It\'s NOT about lots of angulation — a little separation is a great start',
+          'Bermed corners allow more inclination because the surface supports the lean',
+          'Flat corners need more angulation to maintain grip'
+        ]
+      },
+      {
+        id: 'rotation',
+        name: 'Rotation',
+        what: 'Learn to use hip and knee rotation to drive the bike through corners',
+        why: 'Rotation improves stability, allows better angulation, and for advanced riders can "drive" the bike through tight corners',
+        how: 'Move hips to the OUTSIDE of the turn while pointing the belly button INTO the turn. Knees point the same way as the belly button. Hips on a "banana-shaped rail".',
+        keywords: 'Hips outside → belly button into turn → drives the bike',
+        analogies: 'Hips on a "banana-shaped rail" | Corkscrew handle',
+        points: [
+          'Rotational movements start from the hips and knees',
+          'Hips move laterally to the OUTSIDE of the turn',
+          'Belly button points INTO the turn',
+          'Knees point same direction as belly button',
+          'For beginners/intermediates: improves stability and angulation',
+          'For advanced riders: "drives" the bike through the corner (torque)',
+          'Useful for tighter corners, berms, switchbacks'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'pc',
+    icon: '💪',
+    name: 'Pressure Control',
+    type: 'Bio-Mechanical',
+    badgeClass: 'badge-pc',
+    tagline: 'Using the body as suspension',
+    overview: `Pressure Control is using the arms and legs either as suspension to smooth out the trail, or to actively push and pull on the bike to gain better control, traction or speed. It is a "sensory" skill — the rider needs to FEEL the terrain.\n\nBumps and rollers increase pressure on the bike, as do landings, compressions and corners. The rider reacts accordingly — absorbing, controlling, or even resisting pressure to create more.\n\nThis is an advanced skill and is often the mark of an expert rider.`,
+    components: [
+      {
+        id: 'absorbing',
+        name: 'Absorbing Pressure (Body as Suspension)',
+        what: 'Use arms and legs to absorb terrain and create a smooth ride',
+        why: 'Just like a bike\'s suspension separates the frame from bumps, a rider can use their body to separate from the trail',
+        how: 'Allow arms and legs to compress (absorb) as you hit bumps, roots or compressions. The bike moves up and down while the body stays relatively still.',
+        keywords: 'Absorb → Extend → Stay centred',
+        analogies: 'Car suspension — body smooth while wheels bounce',
+        points: [
+          'Arms and legs compress when hitting bumps',
+          'Body stays relatively level as bike moves beneath',
+          'Absorbing maintains traction and momentum',
+          'Stiff arms and legs transfer all force to the body',
+          'More ROM = better ability to absorb bigger features'
+        ]
+      },
+      {
+        id: 'creating',
+        name: 'Creating Pressure (Pumping)',
+        what: 'Actively push into terrain features to create speed and flow',
+        why: 'Pumping rollers and compressions can generate speed without pedalling, improving flow and efficiency',
+        how: 'Push down (extend arms and legs) into the back side of rollers and compressions. Absorb the upside. Timing is critical — push too early or late and momentum is lost.',
+        keywords: 'Extend into downslope → Absorb upslope → Timing → Flow',
+        analogies: 'Pumping a playground swing — timing makes the difference',
+        points: [
+          'Push (extend) into the BACK side of rollers',
+          'Absorb (compress) the FRONT/UP side',
+          'Combined with timing creates speed without pedalling',
+          'More force = more speed',
+          'Foundation for jumps and drops'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'tc',
+    icon: '⏱️',
+    name: 'Timing & Coordination',
+    type: 'Bio-Mechanical & Tactical',
+    badgeClass: 'badge-tc',
+    tagline: 'When and how much — for every skill',
+    overview: `Timing & Coordination (T&C) is both an independent skill AND a component of all other skills. WHEN and HOW MUCH are concepts that apply to everything.\n\nWhen should the rider get lower? How low? When to change gear? When to lean, and how much?\n\nT&C can be developed through practice, repetition, and increasing speed or terrain challenge. Through time, a rider's "sense" of timing becomes more automatic.`,
+    components: [
+      {
+        id: 'timing',
+        name: 'Timing & Coordination Overview',
+        what: 'Learn the WHEN and HOW MUCH for all skills on the bike',
+        why: 'Good timing turns correct technique into smooth, efficient riding. Poor timing means the technique is there but the execution is off.',
+        how: 'Two key components of timing: SPEED and DISTANCE. For a given speed, the rider executes a movement at a set distance from an obstacle or feature.',
+        keywords: 'Speed + Distance → Timing | WHEN + HOW MUCH → Coordination',
+        analogies: 'Like playing a sport — knowing the move isn\'t enough, you need to do it at the right moment',
+        points: [
+          'T&C is a component of ALL six skills',
+          'SPEED: the faster you go, the earlier you need to act',
+          'DISTANCE: execute the movement at the right distance from the feature',
+          'Develop through mileage and progressive terrain challenge',
+          'Increases in speed naturally test and improve timing',
+          'Note: T&C is usually NOT the primary skill to focus on for most riders'
+        ]
+      }
+    ]
+  }
+];
+
+const LESSONS = [
+  {
+    id: 'l-climb',
+    icon: '⛰️',
+    name: 'How to Climb Seated',
+    skillId: 'sb',
+    skillName: 'Stability & Balance',
+    studentGoal: 'To climb with more control and confidence',
+    instructorGoal: 'Improve stability through a centred climbing body position',
+    terrain: 'Easy, gentle incline — introduce on flat first',
+    what: 'Learn how to climb with more control and confidence',
+    why: 'So our climbing is more efficient and we can tackle steeper terrain more successfully',
+    how: 'Slide the HIPS FORWARD on the seat and HINGE AT THE WAIST to lower your chest to the bars. Lowering the wrists can also help.',
+    keywords: 'Position → Stability → Front wheel stays down',
+    analogies: 'Get low and sniff the donut on the front wheel! | If the seat is uncomfortable… your hips are forward!',
+    phases: [
+      {
+        title: 'INTRODUCE',
+        content: 'Explain, demo and practice the Seated Climbing Position on flat or gentle terrain. Use a static demo — show it standing still and have students mirror you.',
+        points: [
+          'Hips forward on the seat',
+          'Chest low — hinge at the waist, NOT by hunching the back',
+          'Wrists low as needed',
+          'Keeps the front wheel weighted and tracking',
+          'Maintains traction on the rear wheel'
+        ]
+      },
+      {
+        title: 'DEVELOP',
+        content: 'Open-handed / Piano Hands exercises to feel correct position through body sensation.',
+        points: [
+          'Exercise 1 — Open-handed: Climb with open hands or one arm. If not centred, students feel it immediately.',
+          'Exercise 2 — Piano Hands: Find a position where fingers fully relax. Tense grip = out of balance.',
+          'Feedback: "Hips forward, chest low" | "Relax your grip" | "Can you feel the front wheel staying down?"'
+        ]
+      },
+      {
+        title: 'EXPLORE',
+        content: 'Progressively increase the gradient. Introduce the Hover Climbing Position for steeper sections.',
+        points: [
+          'Hover: hips hovering just slightly off the seat, chest low and over the bars',
+          '"Think about raising the hips one inch — not standing up"',
+          'Continue adding terrain steepness progressively'
+        ]
+      },
+      {
+        title: 'APPLY',
+        content: 'Ride a section of trail with a gentle climb. Students apply the climbing position independently.',
+        points: [
+          'Watch and provide individual, solution-focused feedback',
+          'SEE BAD: Elbows tucking in, front wheel lifting, sitting too upright, gripping tight',
+          'SEE GOOD: Hips forward, chest low, relaxed grip, front wheel weighted and down'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'l-descend',
+    icon: '🎿',
+    name: 'How to Descend with Confidence',
+    skillId: 'sb',
+    skillName: 'Stability & Balance',
+    studentGoal: 'To descend with more confidence and control',
+    instructorGoal: 'Improve stability through Neutral and Ready Position on descents',
+    terrain: 'Open area on flat first, then easy trail. If riders are braking a lot, terrain is too steep.',
+    what: 'Learn how to descend using the Neutral and Ready Positions',
+    why: 'These positions provide stability, save energy and give the range of movement needed to react to the trail',
+    how: 'NEUTRAL: Stand tall and relaxed, pedals level, chin over stem. READY: Same but lower and wider — hinge at the waist, bend elbows first, flex knees only if needed.',
+    keywords: 'Position → Stability → Resistance to Forces → Range of Movement → Balance',
+    analogies: 'Picnic table vs. lamp post | Monster truck vs. race car | Clothes line to stay low',
+    warn: 'Assess skills before descending. Lower seats for more clearance and range of movement. Choose terrain that allows riders to coast most of the time.',
+    phases: [
+      {
+        title: 'INTRODUCE — Neutral Position',
+        content: 'Start in an open area on flat terrain. Explain, demo and practice one position at a time before going downhill.',
+        points: [
+          'WHY: Good efficiency, less fatigue, great traction on both wheels',
+          'Pedals level, chin over stem, tall and relaxed',
+          'Heels dropped to extend knees so muscles can relax',
+          'Great for efficiency and less fatigue'
+        ]
+      },
+      {
+        title: 'INTRODUCE — Ready Position',
+        content: 'Once Neutral is understood, introduce Ready as a progression.',
+        points: [
+          'WHY: More stability and range of movement to react and absorb forces',
+          'Same as Neutral but LOWER and WIDER',
+          'Hinge at the waist and bend elbows FIRST',
+          'Flex knees only if needed',
+          'Think of it as a "Ready Dial" — use only as much as needed',
+          'Being too low is also more tiring'
+        ]
+      },
+      {
+        title: 'DEVELOP — Fore-Aft & Lateral Movement',
+        content: 'Have students move the bike back and forth to feel the balance difference.',
+        points: [
+          'Too far back = lots of strain in the fingers',
+          'Too far forward = strain on shoulders, arms and hands',
+          'Centred = relaxed grip, mobile body, can move in any direction',
+          'Moving the BIKE is quicker — better for large fast corrections',
+          'Moving the BODY is slower — better for gradual adjustments',
+          'Repeat side to side for lateral balance and range of movement'
+        ]
+      },
+      {
+        title: 'EXPLORE — Trail Ride',
+        content: 'Take it to the trail. Guiding comes first — describe upcoming terrain and review safety rules.',
+        points: [
+          'Have students ride a whole section in Neutral, then Ready',
+          'Compare and contrast each position',
+          'Linking point to braking: "That centred, lower position gives great traction — which sets us up perfectly for using the brakes effectively."',
+          'SEE BAD: Hips too far back, arms locked straight, rider stiff and rigid',
+          'SEE GOOD: Centred and mobile, chin over stem, pedals level, relaxed arms'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'l-brake',
+    icon: '🛑',
+    name: 'How to Brake Without Skidding',
+    skillId: 'c',
+    skillName: 'Controls — Braking',
+    studentGoal: 'To control speed off-road with confidence, without skidding',
+    instructorGoal: 'Develop effective, controlled braking technique',
+    terrain: 'Away from trails — smooth open terrain with a little loose surface. Wide dirt road ideal.',
+    what: 'Learn how to brake and slow down without skidding',
+    why: 'So we can control our speed at all times and improve confidence on loose terrain',
+    how: 'Apply brakes GRADUALLY… a little bit at a time. Once brakes are on, maintain CONSISTENT power (no pumping). Stay strong and brace to control your body position.',
+    keywords: 'Gradual — Consistent — Adjust',
+    analogies: 'Light dimmer switch | Coffee cup on the handlebars — don\'t spill it | Braking in a car',
+    warn: 'Start away from trails on smooth open terrain. Build up very slowly and keep the progression small.',
+    phases: [
+      {
+        title: 'INTRODUCE — Step by Step',
+        content: null,
+        steps: [
+          'Step 1 — WALKING: Walk next to bikes and squeeze each lever separately. Front = more power. Rear = less. Explain gradual and consistent.',
+          'Step 2 — REAR BRAKE ONLY: Gather speed, Neutral Position, slow at a marker. Goal: stop without skidding. Brace by dropping heels and getting slightly lower.',
+          'Step 3 — CONTROLLING A REAR SKID: Demo a small intentional skid, then ease the squeeze to recover. Students practice the "bite point".',
+          'Step 4 — FRONT BRAKE ONLY: Repeat Steps 1–2 for front brake. No intentional skidding. Very gradual on first attempts.',
+          'Step 5 — BOTH BRAKES: Progress to using both brakes together, starting gradually.'
+        ]
+      },
+      {
+        title: 'DEVELOP',
+        content: 'Continue the marker stop drill, increasing speed in small steps.',
+        points: [
+          'One finger on each lever — prevents grabbing, encourages progressive braking',
+          'Feedback: "Gradual, consistent, adjust"',
+          '"Don\'t grab — squeeze"',
+          '"Drop your heels and get lower as you brake"',
+          '"Feel the traction, not the skid"'
+        ]
+      },
+      {
+        title: 'EXPLORE',
+        content: 'Move to slightly varied terrain — gentle gradients and open corners.',
+        points: [
+          'Students apply braking BEFORE terrain features, not on them',
+          'Link back to Lesson 2: "Good braking relies on being centred. Same position, new skill."',
+          'SEE BAD: Grabbing brakes suddenly, rear-wheel skidding, late braking, body lurching forward',
+          'SEE GOOD: Gradual and consistent braking, bracing and lower, braking before features'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'l-cadence',
+    icon: '⚙️',
+    name: 'How to Maintain Cadence',
+    skillId: 'c',
+    skillName: 'Controls — Gears',
+    studentGoal: 'To use gears more often and ride more efficiently',
+    instructorGoal: 'Develop correct cadence through gear selection',
+    terrain: 'Open grassy field — provides space to ride and watch students',
+    what: 'Learn how to use gears to maintain the correct cadence',
+    why: 'To be more efficient — make riding easier, the climbs less tiring and the trails more fun',
+    how: 'Change gears according to speed and terrain to maintain a consistent cadence at all times… one that you can accelerate with.',
+    keywords: 'A.C.E — Accelerate, Comfortable, Efficient | Cadence 60–90rpm',
+    analogies: "Car engine revs — too slow it stalls, too fast burns fuel | Running pace: walk → jog → sprint. Find the 'jog zone'.",
+    phases: [
+      {
+        title: 'INTRODUCE — Cadence Carousel',
+        content: 'Students ride in a circle as they practice fast and slow cadences to feel the "correct" cadence. Instructor in centre, students circle CLOCKWISE so drivetrains are visible.',
+        steps: [
+          '3-ring set-up: start in middle chainring. 2-ring: start on the bigger chainring.',
+          'FAST CADENCE: Easiest gear, spin as fast as possible. "Can you accelerate?" — Feel: cadence too fast.',
+          'SLOW CADENCE: Hardest gear. One-finger drag brake if picking up speed. "Can you accelerate?" — Feel: cadence too slow.',
+          'EFFICIENT CADENCE: Release brake, find "Cruise Mode" gear. Right knee comes up slightly faster than once per second. Not too much pedal pressure. "Can you accelerate?"'
+        ]
+      },
+      {
+        title: 'DEVELOP',
+        content: 'Challenge students to maintain their efficient cadence as speed or terrain changes.',
+        points: [
+          '"If the speed or terrain changes, you should probably change gear!"',
+          'Have them speed up or slow down while maintaining cadence',
+          'Ride up or down a slight slope maintaining cadence',
+          'Ask: can you always accelerate?'
+        ]
+      },
+      {
+        title: 'EXPLORE',
+        content: 'Discussion questions, then a trail ride to apply the skill.',
+        points: [
+          'Ask: "How do you use the shifters to find easier or harder gears?"',
+          'Ask: "When should you change gear?"',
+          'Take them for a short ride — different speed and terrain to challenge cadence maintenance',
+          'Alternative intro: Easy-Hard Race — race from standing start in easiest gear, then hardest, then free'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'l-terrain',
+    icon: '👁️',
+    name: 'How to Flow in Technical Terrain',
+    skillId: 'ta',
+    skillName: 'Terrain Awareness',
+    studentGoal: 'To ride technical terrain with more flow and confidence',
+    instructorGoal: 'Improve trail scanning between Now & Next',
+    terrain: 'Trail with some technical features appropriate for ability level',
+    what: 'Learn how to ride better on technical terrain by scanning the trail with your vision',
+    why: 'So we can collect more information about the trail and better react and adapt, for more control and flow',
+    how: 'Use Trail Scanning: move your vision between the NOW and NEXT up and down the trail, to create a FIELD OF VISION — so you are aware of a whole SECTION of trail.',
+    keywords: 'NOW → NEXT → Field of Vision → Scan',
+    analogies: 'Headlights — high and low beams | "Pingpong" with the eyes | Details vs. the big picture',
+    phases: [
+      {
+        title: 'INTRODUCE — Guitar Picks Exercise',
+        content: 'Ask students to wait, then follow you down the trail looking for "dropped guitar picks" (which you don\'t actually drop). The threat of missing items forces scanning between now and next.',
+        points: [
+          'CRITICAL: Students must ride at NORMAL trail speed — slow riding defeats the purpose',
+          'Debrief: "Did scanning help or hinder?"',
+          'Use this to illustrate both the benefit of scanning ahead AND the cost of getting stuck in one viewpoint',
+          'NOW = what the rider is about to do (1–2 seconds ahead)',
+          'NEXT = what\'s coming up (3–5 seconds ahead)',
+          'Field of Vision = the trail between NOW and NEXT'
+        ]
+      },
+      {
+        title: 'DEVELOP',
+        content: 'Contrast exercises to feel the difference between NOW-only and NEXT-only scanning.',
+        points: [
+          'Ride a section looking ONLY in the NOW — discuss cons (no time to prepare)',
+          'Ride same section ONLY at the NEXT — discuss cons (can\'t deal with immediate obstacles)',
+          '"The handlebars can be used as a mock trail for a static visual of NOW and NEXT"',
+          'Progress: same terrain at slightly higher speed'
+        ]
+      },
+      {
+        title: 'EXPLORE',
+        content: 'Progress to line choice — using scanning to pick a better line.',
+        points: [
+          'Introduce the three lines: SMOOTH (safest), DIRECT (shortest), EFFICIENT (racing line)',
+          'Challenge: ride the smoothest possible line — pretend wheels are made of glass',
+          'Try to ride "quietly" — minimal noise from tires over terrain',
+          'Progress through increasingly technical sections'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'l-corner',
+    icon: '↩️',
+    name: 'How to Corner with Confidence',
+    skillId: 'sb',
+    skillName: 'Stability & Balance',
+    studentGoal: 'To corner with more confidence, stability and flow',
+    instructorGoal: 'Improve stability and traction through corners by using Neutral → Ready',
+    terrain: 'Open area or wide straight path first. Good traction. Avoid loose/sandy surfaces.',
+    what: 'Improve confidence and flow in CORNERS by maintaining a stronger, more centred position',
+    why: 'This will help improve stability and traction through corners',
+    how: 'Approach in NEUTRAL Position. Just before the corner, move into READY position — bend elbows and hinge at the waist. Return to Neutral as you exit.',
+    keywords: 'Neutral (approach) → Ready (through corner) → Neutral (exit)',
+    analogies: 'Each corner has a lower ceiling compared to the straight | Keep the "scales" level — even weight on both wheels for traction',
+    phases: [
+      {
+        title: 'INTRODUCE',
+        content: 'Basic exercises to first assess positioning and ability to maintain a position through corners.',
+        points: [
+          'Weave left to right in NEUTRAL Position — feedback on position and ROM',
+          'Weave left to right in READY Position — focus on flexing joints together like an accordion',
+          'Static Demo: Standing next to bike — move from Neutral to Ready, noting chin over stem stays',
+          'Contrast demo: bend ONLY knees (collapses back) vs. ONLY hips (hinges forward)'
+        ]
+      },
+      {
+        title: 'DEVELOP',
+        content: 'Practice moving between positions in isolated turns.',
+        points: [
+          'Set up a C or S turn with cones or rocks in a wide area',
+          'Practice: Approach Neutral → Execute Ready → Exit Neutral',
+          'Develop angulation: allow bike to lean underneath you',
+          'Low chest allows arms to bend/extend as bike tips side to side',
+          'It\'s NOT about lots of angulation — a little separation is a great start'
+        ]
+      },
+      {
+        title: 'EXPLORE',
+        content: 'Take to trail with progressively more challenging corners.',
+        points: [
+          'Mix up turn shape and size — more frequent turns for timing practice',
+          'Add terrain gradient for more challenge',
+          'Link to Direction Control for advanced riders: angulation and rotation',
+          'SEE BAD: Stiff and rigid, arms locked, hips too far back, leaning body into corner not bike',
+          'SEE GOOD: Centred, mobile, Neutral→Ready→Neutral timing, bike angulating underneath'
+        ]
+      }
+    ]
+  }
+];
+
+const MOVES = [
+  {
+    id: 'm-fwl',
+    icon: '☝️',
+    name: 'Front Wheel Lift',
+    skills: ['Stability & Balance', 'Pressure Control', 'Timing & Coordination'],
+    why: 'Great foundation maneuver — master this and many others follow. Essential for lifting the wheel over rocks or roots, keeping flow on trails.',
+    setup: 'Smooth, flat terrain, jogging speed, seat lowered slightly.',
+    how: 'NEUTRAL → COMPRESS → EXPLODE',
+    steps: [
+      'Get READY: Neutral Position, pedals level, covering the brakes.',
+      'In one dynamic movement, COMPRESS downward through the middle of the bike (preload).',
+      'EXPLODE upwards — use legs to push off the pedals powerfully.',
+      'As the body moves upward quickly, RELAX and allow the bike to come up underneath you.',
+      'The key: quick "down and up" movement — like bouncing on the spot.'
+    ],
+    cues: [
+      'Neutral, Compress, Explode',
+      'Quick "down and up" — like bouncing',
+      'Relax at the top — let the bike come up'
+    ],
+    progression: 'Three C\'s: COMFORTABLE (looks easy?) → CONSISTENT (4-5 times?) → CORRECT (right technique?). Once consistent, try it over a stick on the ground. Then timing: SPEED + DISTANCE.',
+    timing: 'For a given speed, execute at a specific distance from the obstacle. Slower = execute closer. Faster = execute further back.',
+    mistakes: 'Pulling the bars instead of using legs | Not compressing first | Not relaxing at the top | Looking down'
+  },
+  {
+    id: 'm-pwl',
+    icon: '🚲',
+    name: 'Pedalling Wheel Lift',
+    skills: ['Pressure Control', 'Timing & Coordination', 'Stability & Balance'],
+    why: 'Used while pedalling — lifts the front wheel as you push through a pedal stroke. More useful on trail than a static front wheel lift as it works while moving.',
+    setup: 'Smooth, flat terrain, comfortable pedalling speed.',
+    how: 'PEDAL → LOAD → PULL',
+    steps: [
+      'Approach in Neutral Position at a comfortable pedalling speed.',
+      'As your dominant (power) foot comes to 2 o\'clock position, begin to load through the pedal.',
+      'Push powerfully through the pedal stroke (the "power phase") while simultaneously hinging forward slightly.',
+      'As the pedal drives through, quickly UNLOAD — hinge back slightly to allow the front wheel to rise.',
+      'Arms stay loose — do not pull the bars. The movement is generated through the pedals.'
+    ],
+    cues: [
+      'Load → Drive → Unload',
+      'Pedal-driven — not arm-pulled',
+      'Quick timing — don\'t hold the wheel up'
+    ],
+    progression: 'Same Three C\'s. Start on flat, then progress to timing it over an obstacle. Eventually combine with terrain features like roots or step-ups.',
+    mistakes: 'Pulling the bars rather than driving through the pedals | Wrong timing on the pedal stroke | Not staying centred'
+  },
+  {
+    id: 'm-roll',
+    icon: '⬇️',
+    name: 'Roll Down (Drop-Off)',
+    skills: ['Stability & Balance', 'Controls', 'Terrain Awareness'],
+    why: 'The foundation drop-off technique — essential for riding trail features, increasing confidence on technical descents.',
+    setup: 'Find a small, clearly defined drop-off. Initially just a kerb height or small ledge. Smooth runout essential.',
+    how: 'APPROACH → COMMIT → READY → LAND',
+    steps: [
+      'APPROACH in Neutral Position at a controlled speed. Trail scan to identify the lip and runout.',
+      'COMMIT: Do NOT brake on or near the lip — this causes the front wheel to dig in.',
+      'Move into READY Position just before the lip. Hinge at the waist, bend elbows.',
+      'Keep pedals level and look to the RUNOUT — not down at the drop.',
+      'LAND: Allow the bike to land and absorb the compression — let arms and legs act as suspension.'
+    ],
+    cues: [
+      'Neutral → Ready at the lip',
+      'No braking at the lip — brake BEFORE',
+      'Look to the runout',
+      'Arms and legs absorb the landing'
+    ],
+    progression: 'Start by rolling off the edge slowly. Build up to a flowing approach speed. Progress by finding slightly bigger features with the same characteristics.',
+    warn: 'Always check the runout before attempting. Never attempt a drop where the landing is unseen.',
+    mistakes: 'Braking on the lip (front wheel drops aggressively) | Looking down at the drop | Standing up instead of getting into Ready | Stiff arms/legs on landing'
+  }
+];
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+
+let currentPage = 'home';
+let pageStack = [];
+let currentView = null;
+
+// ═══════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════
+
+function setActiveNav(tab) {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('nav-' + tab);
+  if (btn) btn.classList.add('active');
+}
+
+function showPage(page, data, title) {
+  // Reset search
+  const s = document.getElementById('search');
+  if (s.value && page !== 'search') {
+    s.value = '';
+  }
+
+  currentPage = page;
+  currentView = data || null;
+
+  const backBtn = document.getElementById('back-btn');
+  const pageTitle = document.getElementById('page-title');
+  const content = document.getElementById('content');
+
+  content.scrollTop = 0;
+
+  switch(page) {
+    case 'home':
+      pageStack = [];
+      backBtn.style.display = 'none';
+      pageTitle.innerHTML = '<span class="logo">PMBIA</span> Quick Reference';
+      setActiveNav('home');
+      renderHome();
+      break;
+    case 'skills':
+      pageStack = [];
+      backBtn.style.display = 'none';
+      pageTitle.textContent = 'Six Skills';
+      setActiveNav('skills');
+      renderSkillsList();
+      break;
+    case 'lessons':
+      pageStack = [];
+      backBtn.style.display = 'none';
+      pageTitle.textContent = 'Example Lessons';
+      setActiveNav('lessons');
+      renderLessonsList();
+      break;
+    case 'moves':
+      pageStack = [];
+      backBtn.style.display = 'none';
+      pageTitle.textContent = 'Foundation Maneuvers';
+      setActiveNav('moves');
+      renderMovesList();
+      break;
+    case 'skill-detail':
+      pageStack.push({ page: 'skills', title: 'Six Skills' });
+      backBtn.style.display = 'inline-flex';
+      pageTitle.textContent = data.name;
+      renderSkillDetail(data);
+      break;
+    case 'component-detail':
+      pageStack.push({ page: currentPage === 'home' ? 'home' : 'skill-detail' });
+      backBtn.style.display = 'inline-flex';
+      pageTitle.textContent = data.component.name;
+      renderComponentDetail(data.skill, data.component);
+      break;
+    case 'lesson-detail':
+      pageStack.push({ page: 'lessons', title: 'Example Lessons' });
+      backBtn.style.display = 'inline-flex';
+      pageTitle.textContent = data.name;
+      renderLessonDetail(data);
+      break;
+    case 'move-detail':
+      pageStack.push({ page: 'moves', title: 'Maneuvers' });
+      backBtn.style.display = 'inline-flex';
+      pageTitle.textContent = data.name;
+      renderMoveDetail(data);
+      break;
+    case 'search':
+      backBtn.style.display = 'none';
+      pageTitle.innerHTML = '<span class="logo">PMBIA</span> Quick Reference';
+      renderSearch(title); // title = query
+      break;
+  }
+}
+
+function goBack() {
+  if (pageStack.length === 0) {
+    showPage('home');
+    return;
+  }
+  const prev = pageStack.pop();
+  if (prev.page === 'home') showPage('home');
+  else if (prev.page === 'skills') showPage('skills');
+  else if (prev.page === 'lessons') showPage('lessons');
+  else if (prev.page === 'moves') showPage('moves');
+  else if (prev.page === 'skill-detail' && currentView) {
+    showPage('skill-detail', currentView.skill || currentView);
+  } else showPage('home');
+}
+
+// ═══════════════════════════════════════
+// RENDER FUNCTIONS
+// ═══════════════════════════════════════
+
+function renderHome() {
+  const content = document.getElementById('content');
+  let html = '';
+
+  html += `<div class="section-title">Quick Access — Lessons</div>`;
+  html += `<div class="quick-grid">`;
+  LESSONS.forEach(l => {
+    const skill = SKILLS.find(s => s.id === l.skillId);
+    html += `<div class="quick-card" onclick="showPage('lesson-detail', ${JSON.stringify(l).split('"').join("'")})" >
+      <div class="quick-card-label" style="color:${skill.id==='sb'?'#60a5fa':skill.id==='c'?'#fbbf24':'#00d4a0'}">${l.skillName}</div>
+      <div class="quick-card-title">${l.name}</div>
+      <div class="quick-card-sub">${l.studentGoal}</div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  html += `<div class="section-title">Quick Access — Positions</div>`;
+  html += `<div class="quick-grid">`;
+  const quickPositions = [
+    { skill: SKILLS[0], comp: SKILLS[0].components[0] },
+    { skill: SKILLS[0], comp: SKILLS[0].components[1] },
+    { skill: SKILLS[0], comp: SKILLS[0].components[2] },
+    { skill: SKILLS[0], comp: SKILLS[0].components[3] },
+  ];
+  quickPositions.forEach(qp => {
+    html += `<div class="quick-card" onclick='showComponentFromHome(${JSON.stringify({skillId: qp.skill.id, compId: qp.comp.id})})'>
+      <div class="quick-card-label" style="color:#60a5fa">S&B Position</div>
+      <div class="quick-card-title">${qp.comp.name}</div>
+      <div class="quick-card-sub">${qp.comp.keywords.split('|')[0].split('→')[0].trim()}</div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  html += `<div class="section-title">Quick Access — Controls</div>`;
+  html += `<div class="quick-grid">`;
+  SKILLS[1].components.forEach(comp => {
+    html += `<div class="quick-card" onclick='showComponentFromHome(${JSON.stringify({skillId: "c", compId: comp.id})})'>
+      <div class="quick-card-label" style="color:#fbbf24">Controls</div>
+      <div class="quick-card-title">${comp.name}</div>
+      <div class="quick-card-sub">${comp.keywords.split('|')[0].split('→')[0].trim()}</div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  html += `<div class="section-title">Foundation Maneuvers</div>`;
+  MOVES.forEach(m => {
+    html += `<div class="list-item" onclick='showPage("move-detail", ${safeJSON(m)})'>
+      <div class="list-item-icon">${m.icon}</div>
+      <div class="list-item-body">
+        <div class="list-item-title">${m.name}</div>
+        <div class="list-item-sub">${m.skills.slice(0,2).join(' · ')}</div>
+      </div>
+      <div class="list-item-arrow">›</div>
+    </div>`;
+  });
+
+  content.innerHTML = html;
+}
+
+function showComponentFromHome(data) {
+  const skill = SKILLS.find(s => s.id === data.skillId);
+  const comp = skill.components.find(c => c.id === data.compId);
+  pageStack = [{ page: 'home' }];
+  document.getElementById('back-btn').style.display = 'inline-flex';
+  document.getElementById('page-title').textContent = comp.name;
+  renderComponentDetail(skill, comp);
+  currentView = { skill, component: comp };
+}
+
+function renderSkillsList() {
+  const content = document.getElementById('content');
+  let html = `<div style="padding-top:4px">`;
+  SKILLS.forEach(s => {
+    html += `<div class="list-item" onclick='showPage("skill-detail", ${safeJSON(s)})'>
+      <div class="list-item-icon">${s.icon}</div>
+      <div class="list-item-body">
+        <div class="list-item-title">${s.name}</div>
+        <div class="list-item-sub">${s.type} · ${s.tagline}</div>
+      </div>
+      <div class="list-item-arrow">›</div>
+    </div>`;
+  });
+  html += `</div>`;
+  content.innerHTML = html;
+}
+
+function renderSkillDetail(skill) {
+  const content = document.getElementById('content');
+  let html = '';
+
+  html += `<div class="detail-header">
+    <div class="detail-skill-tag">${skill.type}</div>
+    <div class="detail-title">${skill.icon} ${skill.name}</div>
+  </div>`;
+
+  // Overview
+  html += `<div class="block">
+    <div class="block-title"><span class="block-title-dot" style="background:var(--accent)"></span>Overview</div>
+    ${skill.overview.split('\n\n').map(p => `<p class="body-text">${p}</p>`).join('')}
+  </div>`;
+
+  // Components
+  html += `<div class="section-title">Skill Components</div>`;
+  skill.components.forEach(comp => {
+    html += `<div class="skill-overview-item" onclick='showPage("component-detail", ${safeJSON({skill, component: comp})})'>
+      <div class="soi-head">
+        <div class="soi-title">${comp.name}</div>
+        <span style="color:var(--text2)">›</span>
+      </div>
+      <div class="soi-sub">${comp.keywords.split('→')[0].trim()} → …</div>
+    </div>`;
+  });
+
+  content.innerHTML = html;
+  currentView = skill;
+}
+
+function renderComponentDetail(skill, comp) {
+  const content = document.getElementById('content');
+  let html = '';
+
+  html += `<span class="badge badge-${skill.id}">${skill.name}</span>`;
+  html += `<br><br>`;
+
+  // WHAT/WHY/HOW
+  html += `<div class="detail-goal-box">
+    <div class="goal-row"><span class="goal-label gl-what">WHAT</span><span class="goal-text">${comp.what}</span></div>
+    <div class="goal-row"><span class="goal-label gl-why">WHY</span><span class="goal-text">${comp.why}</span></div>
+    <div class="goal-row"><span class="goal-label gl-how">HOW</span><span class="goal-text"><strong>${comp.how}</strong></span></div>
+  </div>`;
+
+  if (comp.keywords) {
+    html += `<div class="keyword-block">${comp.keywords}</div>`;
+  }
+
+  if (comp.analogies) {
+    html += `<div class="analogy-block">${comp.analogies}</div>`;
+  }
+
+  if (comp.warn) {
+    html += `<div class="warn-block">${comp.warn}</div>`;
+  }
+
+  // Key points
+  if (comp.points) {
+    html += `<div class="block">
+      <div class="block-title"><span class="block-title-dot" style="background:#60a5fa"></span>Key Points</div>
+      <ul class="bullet-list">${comp.points.map(p => `<li>${p}</li>`).join('')}</ul>
+    </div>`;
+  }
+
+  // Exercises
+  if (comp.exercises) {
+    html += `<div class="block">
+      <div class="block-title"><span class="block-title-dot" style="background:var(--accent2)"></span>Exercises & Progressions</div>
+      <ol class="steps">${comp.exercises.map(e => `<li>${e}</li>`).join('')}</ol>
+    </div>`;
+  }
+
+  // Feedback cues
+  if (comp.cues) {
+    html += `<div class="block">
+      <div class="block-title"><span class="block-title-dot" style="background:#c084fc"></span>Feedback Cues</div>
+      <ul class="bullet-list">${comp.cues.map(c => `<li>"${c}"</li>`).join('')}</ul>
+    </div>`;
+  }
+
+  // See bad / good
+  if (comp.see_bad || comp.see_good) {
+    html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px">`;
+    if (comp.see_bad) html += `<div class="block" style="border-color:rgba(255,107,107,0.3)"><div class="block-title" style="color:#ff6b6b"><span class="block-title-dot" style="background:#ff6b6b"></span>We Might See</div><p class="body-text" style="font-size:13px">${comp.see_bad}</p></div>`;
+    if (comp.see_good) html += `<div class="block" style="border-color:rgba(0,212,160,0.3)"><div class="block-title" style="color:#00d4a0"><span class="block-title-dot" style="background:#00d4a0"></span>We Want to See</div><p class="body-text" style="font-size:13px">${comp.see_good}</p></div>`;
+    html += `</div>`;
+  }
+
+  content.innerHTML = html;
+  currentView = { skill, component: comp };
+}
+
+function renderLessonsList() {
+  const content = document.getElementById('content');
+  let html = `<div style="padding-top:4px">`;
+  LESSONS.forEach(l => {
+    const skill = SKILLS.find(s => s.id === l.skillId);
+    html += `<div class="list-item" onclick='showPage("lesson-detail", ${safeJSON(l)})'>
+      <div class="list-item-icon">${l.icon}</div>
+      <div class="list-item-body">
+        <div class="list-item-title">${l.name}</div>
+        <div class="list-item-sub"><span class="badge badge-${skill.id}" style="font-size:9px;padding:2px 5px">${l.skillName}</span>${l.studentGoal}</div>
+      </div>
+      <div class="list-item-arrow">›</div>
+    </div>`;
+  });
+  html += `</div>`;
+  content.innerHTML = html;
+}
+
+function renderLessonDetail(lesson) {
+  const content = document.getElementById('content');
+  const skill = SKILLS.find(s => s.id === lesson.skillId);
+  let html = '';
+
+  html += `<span class="badge badge-${skill.id}">${lesson.skillName}</span>`;
+  html += `<br><br>`;
+
+  // Goal boxes
+  html += `<div class="detail-goal-box">
+    <div class="goal-row"><span class="goal-label gl-what">WHAT</span><span class="goal-text">${lesson.what}</span></div>
+    <div class="goal-row"><span class="goal-label gl-why">WHY</span><span class="goal-text">${lesson.why}</span></div>
+    <div class="goal-row"><span class="goal-label gl-how">HOW</span><span class="goal-text"><strong>${lesson.how}</strong></span></div>
+  </div>`;
+
+  if (lesson.keywords) html += `<div class="keyword-block">${lesson.keywords}</div>`;
+  if (lesson.analogies) html += `<div class="analogy-block">${lesson.analogies}</div>`;
+  if (lesson.warn) html += `<div class="warn-block">${lesson.warn}</div>`;
+
+  // Info chips
+  html += `<div class="info-row">
+    <div class="info-chip"><strong>Student Goal:</strong> ${lesson.studentGoal}</div>
+    <div class="info-chip"><strong>Instructor Goal:</strong> ${lesson.instructorGoal}</div>
+    <div class="info-chip"><strong>Terrain:</strong> ${lesson.terrain}</div>
+  </div>`;
+
+  // Phases
+  if (lesson.phases) {
+    html += `<div class="section-title">Lesson Phases (I.D.E.A)</div>`;
+    lesson.phases.forEach((phase, i) => {
+      html += `<div class="phase-header" onclick="togglePhase(${i})">
+        <div>
+          <div class="phase-title">${phase.title}</div>
+          ${phase.content ? `<div class="phase-sub">${phase.content.substring(0,60)}…</div>` : ''}
+        </div>
+        <span class="phase-chevron" id="chevron-${i}">▼</span>
+      </div>
+      <div class="phase-content" id="phase-${i}">
+        ${phase.content ? `<p class="body-text" style="padding:0 4px 8px">${phase.content}</p>` : ''}
+        ${phase.points ? `<div class="block"><ul class="bullet-list">${phase.points.map(p=>`<li>${p}</li>`).join('')}</ul></div>` : ''}
+        ${phase.steps ? `<div class="block"><ol class="steps">${phase.steps.map(s=>`<li>${s}</li>`).join('')}</ol></div>` : ''}
+      </div>`;
+    });
+  }
+
+  content.innerHTML = html;
+  currentView = lesson;
+}
+
+function togglePhase(i) {
+  const el = document.getElementById('phase-' + i);
+  const ch = document.getElementById('chevron-' + i);
+  if (el.classList.contains('open')) {
+    el.classList.remove('open');
+    ch.style.transform = 'rotate(0deg)';
+  } else {
+    el.classList.add('open');
+    ch.style.transform = 'rotate(180deg)';
+  }
+}
+
+function renderMovesList() {
+  const content = document.getElementById('content');
+  let html = `<div class="block" style="margin-bottom:12px">
+    <p class="body-text" style="font-size:13px">Foundation maneuvers use the Six Skills. Master these and many more advanced moves will follow. Use the Three C's for safe progression: <strong style="color:var(--accent)">Comfortable → Consistent → Correct</strong></p>
+  </div>`;
+  MOVES.forEach(m => {
+    html += `<div class="list-item" onclick='showPage("move-detail", ${safeJSON(m)})'>
+      <div class="list-item-icon">${m.icon}</div>
+      <div class="list-item-body">
+        <div class="list-item-title">${m.name}</div>
+        <div class="list-item-sub">${m.skills.join(' · ')}</div>
+      </div>
+      <div class="list-item-arrow">›</div>
+    </div>`;
+  });
+  content.innerHTML = html;
+}
+
+function renderMoveDetail(move) {
+  const content = document.getElementById('content');
+  let html = '';
+
+  html += `<div style="margin-bottom:8px">${move.skills.map(s => {
+    const skill = SKILLS.find(sk => sk.name === s || sk.name.startsWith(s.split(' ')[0]));
+    return `<span class="badge ${skill ? 'badge-'+skill.id : ''}">${s}</span>`;
+  }).join(' ')}</div>`;
+
+  html += `<div class="detail-goal-box">
+    <div class="goal-row"><span class="goal-label gl-why">WHY</span><span class="goal-text">${move.why}</span></div>
+    <div class="goal-row"><span class="goal-label gl-how">HOW</span><span class="goal-text"><strong>${move.how}</strong></span></div>
+  </div>`;
+
+  if (move.setup) html += `<div class="info-row"><div class="info-chip"><strong>Set-Up:</strong> ${move.setup}</div></div>`;
+  if (move.warn) html += `<div class="warn-block">${move.warn}</div>`;
+
+  html += `<div class="block">
+    <div class="block-title"><span class="block-title-dot" style="background:var(--accent)"></span>Step by Step</div>
+    <ol class="steps">${move.steps.map(s=>`<li>${s}</li>`).join('')}</ol>
+  </div>`;
+
+  html += `<div class="block">
+    <div class="block-title"><span class="block-title-dot" style="background:#c084fc"></span>Cues</div>
+    <ul class="bullet-list">${move.cues.map(c=>`<li>"${c}"</li>`).join('')}</ul>
+  </div>`;
+
+  if (move.progression) {
+    html += `<div class="block">
+      <div class="block-title"><span class="block-title-dot" style="background:var(--accent2)"></span>Progression</div>
+      <p class="body-text">${move.progression}</p>
+      ${move.timing ? `<p class="body-text">${move.timing}</p>` : ''}
+    </div>`;
+  }
+
+  if (move.mistakes) {
+    html += `<div class="block" style="border-color:rgba(255,107,107,0.3)">
+      <div class="block-title" style="color:#ff6b6b"><span class="block-title-dot" style="background:#ff6b6b"></span>Common Mistakes</div>
+      <ul class="bullet-list">${move.mistakes.split(' | ').map(m=>`<li style="color:var(--text)">${m}</li>`).join('')}</ul>
+    </div>`;
+  }
+
+  content.innerHTML = html;
+}
+
+// ═══════════════════════════════════════
+// SEARCH
+// ═══════════════════════════════════════
+
+function handleSearch(q) {
+  if (!q || q.length < 2) {
+    if (currentPage === 'search') {
+      showPage('home');
+    }
+    return;
+  }
+  showPage('search', null, q);
+}
+
+function renderSearch(query) {
+  const content = document.getElementById('content');
+  const q = query.toLowerCase();
+  let results = [];
+
+  // Search skills
+  SKILLS.forEach(skill => {
+    if (skill.name.toLowerCase().includes(q) || skill.overview.toLowerCase().includes(q)) {
+      results.push({ type: 'skill', icon: skill.icon, title: skill.name, sub: skill.type, match: skill.tagline, action: () => showPage('skill-detail', skill) });
+    }
+    skill.components.forEach(comp => {
+      const searchText = [comp.name, comp.what, comp.why, comp.how, comp.keywords, comp.analogies, (comp.points||[]).join(' ')].join(' ').toLowerCase();
+      if (searchText.includes(q)) {
+        results.push({ type: 'component', icon: skill.icon, title: comp.name, sub: skill.name, match: getMatchContext(searchText, q), action: () => { pageStack = [{page:'skills'}]; document.getElementById('back-btn').style.display='inline-flex'; document.getElementById('page-title').textContent = comp.name; renderComponentDetail(skill, comp); currentView = {skill, component: comp}; } });
+      }
+    });
+  });
+
+  // Search lessons
+  LESSONS.forEach(lesson => {
+    const searchText = [lesson.name, lesson.what, lesson.why, lesson.how, lesson.keywords, lesson.analogies, lesson.studentGoal, (lesson.phases||[]).map(p=>[p.title, p.content, (p.points||[]).join(' '), (p.steps||[]).join(' ')].join(' ')).join(' ')].join(' ').toLowerCase();
+    if (searchText.includes(q)) {
+      results.push({ type: 'lesson', icon: lesson.icon, title: lesson.name, sub: lesson.skillName, match: getMatchContext(searchText, q), action: () => showPage('lesson-detail', lesson) });
+    }
+  });
+
+  // Search moves
+  MOVES.forEach(move => {
+    const searchText = [move.name, move.why, move.how, move.steps.join(' '), move.cues.join(' ')].join(' ').toLowerCase();
+    if (searchText.includes(q)) {
+      results.push({ type: 'move', icon: move.icon, title: move.name, sub: 'Foundation Maneuver', match: getMatchContext(searchText, q), action: () => showPage('move-detail', move) });
+    }
+  });
+
+  if (results.length === 0) {
+    content.innerHTML = `<div class="empty-state">
+      <div style="font-size:32px;margin-bottom:12px">🔍</div>
+      <div>No results for "<strong>${query}</strong>"</div>
+      <div style="margin-top:8px;font-size:12px">Try: climb, brake, neutral, ready, cadence, scanning, corner</div>
+    </div>`;
+    return;
+  }
+
+  let html = `<div class="section-title">${results.length} result${results.length!==1?'s':''} for "${query}"</div>`;
+  results.forEach((r, i) => {
+    html += `<div class="search-result-item" onclick="searchResults[${i}].action()">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:18px">${r.icon}</span>
+        <div>
+          <div class="sr-title">${r.title}</div>
+          <div class="sr-context">${r.sub}</div>
+          ${r.match ? `<div class="sr-match">"…${r.match}…"</div>` : ''}
+        </div>
+      </div>
+    </div>`;
+  });
+  content.innerHTML = html;
+  window.searchResults = results;
+}
+
+function getMatchContext(text, q) {
+  const idx = text.indexOf(q);
+  if (idx === -1) return null;
+  const start = Math.max(0, idx - 20);
+  const end = Math.min(text.length, idx + q.length + 30);
+  return text.substring(start, end).trim();
+}
+
+// ═══════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════
+
+function safeJSON(obj) {
+  return JSON.stringify(obj)
+    .replace(/'/g, "\\'")
+    .replace(/"/g, '&quot;');
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+
+// Register service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
+
+// Initial render
+showPage('home');
+
+// Focus search on Cmd+F / Ctrl+F equivalent behaviour
+document.getElementById('search').addEventListener('focus', function() {
+  this.select();
+});
+
+</script>
+</body>
+</html>
