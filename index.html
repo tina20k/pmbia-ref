@@ -1554,7 +1554,7 @@ function renderHome() {
   html += `<div class="quick-grid">`;
   LESSONS.forEach(l => {
     const skill = SKILLS.find(s => s.id === l.skillId);
-    html += `<div class="quick-card" onclick="showPage('lesson-detail', ${JSON.stringify(l).split('"').join("'")})" >
+    html += `<div class="quick-card" onclick="showLessonById('${l.id}')">
       <div class="quick-card-label" style="color:${skill.id==='sb'?'#60a5fa':skill.id==='c'?'#fbbf24':'#00d4a0'}">${l.skillName}</div>
       <div class="quick-card-title">${l.name}</div>
       <div class="quick-card-sub">${l.studentGoal}</div>
@@ -1592,7 +1592,7 @@ function renderHome() {
 
   html += `<div class="section-title">Foundation Maneuvers</div>`;
   MOVES.forEach(m => {
-    html += `<div class="list-item" onclick='showPage("move-detail", ${safeJSON(m)})'>
+    html += `<div class="list-item" onclick="showMoveById('${m.id}')">
       <div class="list-item-icon">${m.icon}</div>
       <div class="list-item-body">
         <div class="list-item-title">${m.name}</div>
@@ -1619,7 +1619,7 @@ function renderSkillsList() {
   const content = document.getElementById('content');
   let html = `<div style="padding-top:4px">`;
   SKILLS.forEach(s => {
-    html += `<div class="list-item" onclick='showPage("skill-detail", ${safeJSON(s)})'>
+    html += `<div class="list-item" onclick="showSkillById('${s.id}')">
       <div class="list-item-icon">${s.icon}</div>
       <div class="list-item-body">
         <div class="list-item-title">${s.name}</div>
@@ -1650,7 +1650,7 @@ function renderSkillDetail(skill) {
   // Components
   html += `<div class="section-title">Skill Components</div>`;
   skill.components.forEach(comp => {
-    html += `<div class="skill-overview-item" onclick='showPage("component-detail", ${safeJSON({skill, component: comp})})'>
+    html += `<div class="skill-overview-item" onclick="showComponentById('${skill.id}','${comp.id}')">
       <div class="soi-head">
         <div class="soi-title">${comp.name}</div>
         <span style="color:var(--text2)">›</span>
@@ -1730,7 +1730,7 @@ function renderLessonsList() {
   let html = `<div style="padding-top:4px">`;
   LESSONS.forEach(l => {
     const skill = SKILLS.find(s => s.id === l.skillId);
-    html += `<div class="list-item" onclick='showPage("lesson-detail", ${safeJSON(l)})'>
+    html += `<div class="list-item" onclick="showLessonById('${l.id}')">
       <div class="list-item-icon">${l.icon}</div>
       <div class="list-item-body">
         <div class="list-item-title">${l.name}</div>
@@ -1810,7 +1810,7 @@ function renderMovesList() {
     <p class="body-text" style="font-size:13px">Foundation maneuvers use the Six Skills. Master these and many more advanced moves will follow. Use the Three C's for safe progression: <strong style="color:var(--accent)">Comfortable → Consistent → Correct</strong></p>
   </div>`;
   MOVES.forEach(m => {
-    html += `<div class="list-item" onclick='showPage("move-detail", ${safeJSON(m)})'>
+    html += `<div class="list-item" onclick="showMoveById('${m.id}')">
       <div class="list-item-icon">${m.icon}</div>
       <div class="list-item-body">
         <div class="list-item-title">${m.name}</div>
@@ -1970,8 +1970,178 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+
+// ═══════════════════════════════════════
+// ID-BASED NAVIGATION HELPERS
+// ═══════════════════════════════════════
+
+function showLessonById(id) {
+  const lesson = LESSONS.find(l => l.id === id);
+  if (lesson) showPage('lesson-detail', lesson);
+}
+
+function showSkillById(id) {
+  const skill = SKILLS.find(s => s.id === id);
+  if (skill) showPage('skill-detail', skill);
+}
+
+function showMoveById(id) {
+  const move = MOVES.find(m => m.id === id);
+  if (move) showPage('move-detail', move);
+}
+
+function showComponentById(skillId, compId) {
+  const skill = SKILLS.find(s => s.id === skillId);
+  const comp = skill.components.find(c => c.id === compId);
+  pageStack.push({ page: 'skills' });
+  document.getElementById('back-btn').style.display = 'inline-flex';
+  document.getElementById('page-title').textContent = comp.name;
+  renderComponentDetail(skill, comp);
+  currentView = { skill, component: comp };
+}
+
+// ═══════════════════════════════════════
+// PIN LOCK
+// ═══════════════════════════════════════
+
+const PIN = '2025';
+const SESSION_KEY = 'pmbia_unlocked';
+
+function isUnlocked() {
+  return sessionStorage.getItem(SESSION_KEY) === 'yes';
+}
+
+function showLockScreen() {
+  document.getElementById('app').style.display = 'none';
+
+  const lock = document.createElement('div');
+  lock.id = 'lock-screen';
+  lock.innerHTML = `
+    <div id="lock-wrap">
+      <div id="lock-logo">PMBIA</div>
+      <div id="lock-sub">Instructor Reference</div>
+      <div id="lock-label">Enter PIN to continue</div>
+      <div id="pin-dots">
+        <span class="dot" id="d0"></span>
+        <span class="dot" id="d1"></span>
+        <span class="dot" id="d2"></span>
+        <span class="dot" id="d3"></span>
+      </div>
+      <div id="lock-error"></div>
+      <div id="keypad">
+        ${[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(k => 
+          k === '' ? `<div class="key empty"></div>` :
+          `<div class="key" onclick="keyPress('${k}')">${k}</div>`
+        ).join('')}
+      </div>
+    </div>
+  `;
+
+  const style = document.createElement('style');
+  style.textContent = `
+    #lock-screen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #0a0e1a;
+      display: flex; align-items: center; justify-content: center;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+    }
+    #lock-wrap {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 40px 20px; width: 100%; max-width: 320px;
+    }
+    #lock-logo {
+      font-size: 36px; font-weight: 900; color: #00d4a0;
+      letter-spacing: 4px; margin-bottom: 6px;
+    }
+    #lock-sub {
+      font-size: 13px; color: #8899bb; letter-spacing: 1px;
+      text-transform: uppercase; margin-bottom: 48px;
+    }
+    #lock-label {
+      font-size: 15px; color: #e8edf8; margin-bottom: 24px; font-weight: 500;
+    }
+    #pin-dots {
+      display: flex; gap: 18px; margin-bottom: 12px;
+    }
+    .dot {
+      width: 14px; height: 14px; border-radius: 50%;
+      border: 2px solid #2a3352; background: transparent;
+      transition: all 0.15s;
+    }
+    .dot.filled { background: #00d4a0; border-color: #00d4a0; }
+    .dot.error  { background: #ff6b6b; border-color: #ff6b6b; }
+    #lock-error {
+      font-size: 13px; color: #ff6b6b; height: 18px;
+      margin-bottom: 32px; font-weight: 600;
+    }
+    #keypad {
+      display: grid; grid-template-columns: repeat(3, 72px);
+      gap: 14px;
+    }
+    .key {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: #141929; border: 1px solid #2a3352;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; font-weight: 600; color: #e8edf8;
+      cursor: pointer; user-select: none;
+      transition: all 0.1s;
+    }
+    .key:active { background: #1e2640; transform: scale(0.93); }
+    .key.empty { background: transparent; border: none; cursor: default; }
+  `;
+
+  document.head.appendChild(style);
+  document.body.appendChild(lock);
+}
+
+let pinEntry = '';
+
+function keyPress(k) {
+  if (k === '⌫') {
+    pinEntry = pinEntry.slice(0, -1);
+  } else if (pinEntry.length < 4) {
+    pinEntry += k;
+  }
+
+  // Update dots
+  for (let i = 0; i < 4; i++) {
+    const dot = document.getElementById('d' + i);
+    dot.classList.toggle('filled', i < pinEntry.length);
+    dot.classList.remove('error');
+  }
+
+  document.getElementById('lock-error').textContent = '';
+
+  if (pinEntry.length === 4) {
+    if (pinEntry === PIN) {
+      sessionStorage.setItem(SESSION_KEY, 'yes');
+      document.getElementById('lock-screen').remove();
+      document.getElementById('app').style.display = 'flex';
+      showPage('home');
+    } else {
+      // Wrong PIN
+      for (let i = 0; i < 4; i++) {
+        document.getElementById('d' + i).classList.add('error');
+      }
+      document.getElementById('lock-error').textContent = 'Incorrect PIN';
+      setTimeout(() => {
+        pinEntry = '';
+        for (let i = 0; i < 4; i++) {
+          const dot = document.getElementById('d' + i);
+          dot.classList.remove('filled', 'error');
+        }
+        document.getElementById('lock-error').textContent = '';
+      }, 1000);
+    }
+  }
+}
+
 // Initial render
-showPage('home');
+if (isUnlocked()) {
+  showPage('home');
+} else {
+  showLockScreen();
+}
 
 // Focus search on Cmd+F / Ctrl+F equivalent behaviour
 document.getElementById('search').addEventListener('focus', function() {
